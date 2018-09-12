@@ -10,22 +10,32 @@
 
 <body>
   <div id="app">
-    <input type="text" v-on:input="changeTitle">
-    <p>{{title}}</p>
+    <p>My name is {{name}} and I'm {{ageTimesThree()}} years old (perhaps)</p>
+    <p>Here's a random number: {{randomNumber()}}</p>
+    <input type="text" v-bind:value="name">
+    <div>
+      <img v-bind:src="comic" alt="A little brazillian comic">
+    </div>
   </div>
+
 </body>
 
 <script>
   new Vue({
     el: '#app',
     data: {
-      title: "Hello World?",
+      name: "Matheus Felicio",
+      age: 22,
+      comic: "https://s8.postimg.cc/5kn8brwlx/photo4933899889973241821.jpg"
     },
     methods:{
-      changeTitle: function(event){
-        this.title = event.target.value;
+      ageTimesThree: function(){
+        return this.age * 3;
+      },
+      randomNumber: function(){
+        return Math.random();
       }
-      }
+    }
   })
 </script>
 </html>
