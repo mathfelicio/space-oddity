@@ -36,18 +36,18 @@
     <template v-if="isGameRunning">
       <section class="row controls">
           <div class="small-12 columns">
-              <button id="attack" @click="battle()">ATTACK</button>
-              <button id="special-attack">SPECIAL ATTACK</button>
-              <button id="heal">HEAL</button>
-              <button id="give-up">GIVE UP</button>
+              <button id="attack" @click="normalAttack()">ATTACK</button>
+              <button id="special-attack" @click="specialAttack()">SPECIAL ATTACK</button>
+              <button id="heal" @click="playerHeal()">HEAL</button>
+              <button id="give-up" @click="giveUp()">GIVE UP</button>
           </div>
       </section>
-      <template id="">
+      <template v-if="battleLog.length > 0">
         <section class="row log">
             <div class="small-12 columns">
                 <ul>
-                    <li>
-
+                    <li v-for="item in battleLog">
+                        {{item}}
                     </li>
                 </ul>
             </div>
@@ -69,19 +69,21 @@
         monsterLifeColor: 'green',
         battleLog: []
     },
-    computed: {
-    },
     methods: {
-      normalAttack: function(){
+      calculateDamage: function(attackPower = 10){
+        return Math.floor((Math.random() * attackPower) + 1);
+      },
 
+      normalAttack: function(){
+        this.logBattle(this.calculateDamage(), this.calculateDamage())
       },
 
       specialAttack: function(){
-
+        this.logBattle(this.calculateDamage(20), this.calculateDamage())
       },
 
       playerHeal: function(){
-
+        this.logBattle(0, this.calculateDamage(), this.calculateDamage(5))
       },
 
       giveUp: function(){
@@ -93,8 +95,21 @@
         this.isGameRunning = false
       },
 
-      battle: function(event){
-          this.playerHealth -= Math.floor((Math.random() * 10) + 1);
+      logBattle: function(playerDamage, monsterDamage, healing = 0){
+        var log = [];
+
+        if (healing > 0) {
+          this.playerHealth += healing;
+          log.push('Player has healed ' + healing + ' life points')
+        }else {
+          this.monsterHealth -= playerDamage;
+            log.push('The Monster took ' + playerDamage + ' damage')
+        }
+
+        this.playerHealth -= monsterDamage;
+          log.push('Player took ' + monsterDamage + ' damage')
+
+          this.battleLog.push(log);
       }
     },
     watch:{
